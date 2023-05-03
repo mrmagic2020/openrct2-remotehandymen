@@ -2,6 +2,10 @@ import {
   store
 } from "openrct2-flexui"
 
+import {
+  regCleanPathAction
+} from "../function/function"
+
 const NAME : string = "remotehandymen";
 
 // define JSON keys for easy reference and edit
@@ -16,8 +20,12 @@ export const dataStructure = {
  * Function for store subscription initialisation at plugin startup
  */
 export function InitData() : void {
+  if (dataStructure.enabled.store.get()) {
+    regCleanPathAction(true);
+  }
   dataStructure.enabled.store.subscribe((value : boolean) => {
     context.getParkStorage().set(dataStructure.enabled.key, value);
+    regCleanPathAction(value);
   });
 };
 
