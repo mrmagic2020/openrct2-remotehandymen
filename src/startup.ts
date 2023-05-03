@@ -1,20 +1,16 @@
-function onClickMenuItem()
-{
-	// Write code here that should happen when the player clicks the menu item under the map icon.
+import {
+  onClickMenuItem
+} from "./ui/main-ui"
 
-	console.log("Hello world!");
-}
-
+import {
+  InitData
+} from "./data/data"
 
 export function startup()
 {
-	// Write code here that should happen on startup of the plugin.
-
-
-
-	// Register a menu item under the map icon:
+  InitData();
 	if (typeof ui !== "undefined")
 	{
-		ui.registerMenuItem("My plugin", () => onClickMenuItem());
+		ui.registerMenuItem("Remote Handymen", () => onClickMenuItem());
 	}
 }
