@@ -2,10 +2,12 @@
 
 import { startup } from "./startup";
 
+const NAME : string = "remotehandymen";
+const VERS : string = "1.0";
 registerPlugin({
-	name: "Name of your plugin",
-	version: "1.0",
-	authors: [ "Your name" ],
+	name: NAME,
+	version: VERS,
+	authors: [ "mrmagic2020" ],
 	type: "remote",
 	licence: "MIT",
 	/**
