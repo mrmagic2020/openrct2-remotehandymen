@@ -1,5 +1,5 @@
 import {
-  window, checkbox, WindowTemplate, label, compute
+  window, checkbox, WindowTemplate
 } from "openrct2-flexui";
 
 import {
