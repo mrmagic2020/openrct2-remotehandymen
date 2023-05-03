@@ -9,7 +9,7 @@ const options =
 	/**
 	 * Change the file name of the output file here.
 	 */
-	filename: "my-plugin.js",
+	filename: "remotehandymen.js",
 
 	/**
 	 * Determines in what build mode the plugin should be build. The default here takes
