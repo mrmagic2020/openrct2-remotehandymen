@@ -3,7 +3,7 @@
 import { startup } from "./startup";
 
 const NAME : string = "remotehandymen";
-const VERS : string = "1.0-alpha";
+const VERS : string = "0.1.0";
 registerPlugin({
 	name: NAME,
 	version: VERS,
