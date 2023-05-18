@@ -68,7 +68,7 @@ function onClickMenuItem()
             ),
             label(
               {
-                text: "The maximum amount of path issue a handyman can remotely clear",
+                text: "The maximum amount of path issue a handyman can \nremotely clear",
                 height: "28px"
               }
             ),
