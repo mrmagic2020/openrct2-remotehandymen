@@ -22,26 +22,6 @@ const hangingMechanicIcon: ImageAnimation = {
 
 function onClickMenuItem()
 {
-  /*
-  const win_desc : WindowTemplate = window(
-    {
-      title: "Remote Handymen",
-      width: 300,
-      height: 100,
-      content: [
-        checkbox(
-          {
-            text: "Enable Remote Handymen",
-            tooltip: "Main switch for the plugin.",
-            isChecked: dataStructure.enabled.store.get(),
-            onChange: (is) => {
-              dataStructure.enabled.store.set(is);
-            }
-          }
-        )
-      ]
-    }
-  ); */
   const win_desc : WindowTemplate = tabwindow(
     {
       title: "Remote Handymen",
@@ -68,8 +48,8 @@ function onClickMenuItem()
             ),
             label(
               {
-                text: "The maximum amount of path issue a handyman can \nremotely clear",
-                height: "28px"
+                text: "The maximum amount of path issue a handyman can \nremotely clear every day",
+                height: "25px"
               }
             ),
             spinner(

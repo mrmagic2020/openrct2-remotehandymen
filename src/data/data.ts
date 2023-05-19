@@ -9,7 +9,11 @@ import {
 const LOCAL : string = "remotehandymen";
 const GLOBAL : string = LOCAL + "_global";
 
-// define JSON keys for easy reference and edit
+/**
+ * Stores the keys and stores of configurations. 
+ * 
+ * Items with a global_ prefix indicates that the item is binded to plugin shared storage. 
+ */
 export const dataStructure = {
   enabled: {
     key: LOCAL + ".enabled",
@@ -51,6 +55,7 @@ export function InitData() : void {
     }
   });
 
+  // global config subscription
   dataStructure.enabled.global_store.subscribe((value : boolean) => {
     context.sharedStorage.set(dataStructure.enabled.global_key, value);
   });
@@ -59,11 +64,12 @@ export function InitData() : void {
     context.getParkStorage().set(dataStructure.issueLimit.key, value);
     setIssueLimit(value);
 
-    if (dataStructure.syncToGlobal.store.get()) {
+    if (dataStructure.syncToGlobal.store.get()) { // sync
       dataStructure.issueLimit.global_store.set(value);
     }
   });
 
+  // global
   dataStructure.issueLimit.global_store.subscribe((value : number) => {
     context.sharedStorage.set(dataStructure.issueLimit.global_key, value);
   });
