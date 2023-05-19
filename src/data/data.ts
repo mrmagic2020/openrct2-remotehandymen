@@ -1,4 +1,5 @@
 import {
+  WritableStore,
   store, twoway
 } from "openrct2-flexui"
 
@@ -9,23 +10,54 @@ import {
 const LOCAL : string = "remotehandymen";
 const GLOBAL : string = LOCAL + "_global";
 
+export interface DataStructure {
+  enabled: {
+    readonly key: string;
+    readonly global_key: string;
+    store: WritableStore<boolean>;
+    global_store: WritableStore<boolean>;
+    readonly default: boolean
+  };
+  issueLimit: {
+    readonly key: string;
+    readonly global_key: string;
+    store: WritableStore<number>;
+    global_store: WritableStore<number>;
+    readonly default: number
+  };
+  useAsGlobal: {
+    readonly key: string;
+    store: WritableStore<boolean>
+  };
+  syncToGlobal: {
+    readonly key: string;
+    store: WritableStore<boolean>
+  };
+  restoreGlobal: {
+    readonly key: string;
+    store: WritableStore<boolean>
+  };
+};
+
 /**
  * Stores the keys and stores of configurations. 
  * 
- * Items with a global_ prefix indicates that the item is binded to plugin shared storage. 
+ * Items with a `global_` prefix indicates that the item is binded to plugin shared storage. 
  */
-export const dataStructure = {
+export const dataStructure : DataStructure = {
   enabled: {
     key: LOCAL + ".enabled",
     global_key: GLOBAL + ".enabled",
-    store: store<boolean>(context.getParkStorage().get(LOCAL + ".enabled", false)),
-    global_store: store<boolean>(context.sharedStorage.get(GLOBAL + ".enabled", false))
+    store: twoway(store<boolean>(context.getParkStorage().get(LOCAL + ".enabled", false))).twoway,
+    global_store: store<boolean>(context.sharedStorage.get(GLOBAL + ".enabled", false)),
+    default: false
   },
   issueLimit: {
     key: LOCAL + ".issueLimit",
     global_key: GLOBAL + ".issueLimit",
     store: twoway(store<number>(context.getParkStorage().get(LOCAL + ".issueLimit", 5))).twoway,
-    global_store: twoway(store<number>(context.sharedStorage.get(GLOBAL + ".issueLimit", 5))).twoway
+    global_store: twoway(store<number>(context.sharedStorage.get(GLOBAL + ".issueLimit", 5))).twoway,
+    default: 5
   },
   useAsGlobal: { // only available as local
     key: LOCAL + ".useAsGlobal",
@@ -34,6 +66,10 @@ export const dataStructure = {
   syncToGlobal: { // only available as local
     key: LOCAL + ".syncToGlobal",
     store: store<boolean>(context.getParkStorage().get(LOCAL + ".syncToGlobal", false))
+  },
+  restoreGlobal: { // only available as local
+    key: LOCAL + ".restoreGlobal",
+    store: store<boolean>(false)
   }
 };
 
@@ -82,10 +118,12 @@ export function InitData() : void {
   });
 
   // Global settings sync toggle subscription
-  dataStructure.syncToGlobal.store.subscribe((value : boolean) => {
-    if (value) {
+  dataStructure.syncToGlobal.store.subscribe((_value : boolean) => {});
 
-    }
+  // Restore subscription
+  dataStructure.restoreGlobal.store.subscribe((_value : boolean) => {
+    dataStructure.enabled.global_store.set(dataStructure.enabled.default);
+    dataStructure.issueLimit.global_store.set(dataStructure.issueLimit.default);
   });
 };
 
