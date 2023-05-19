@@ -19,7 +19,7 @@ const hangingMechanicIcon: ImageAnimation = {
 	offset: { x: 21, y: 22 }
 };
 
-
+let isOpen = false;
 function onClickMenuItem()
 {
   const win_desc : WindowTemplate = tabwindow(
@@ -40,7 +40,7 @@ function onClickMenuItem()
               {
                 text: "Enable Remote Handymen",
                 tooltip: "Main switch for the plugin.",
-                isChecked: dataStructure.enabled.store.get(),
+                isChecked: dataStructure.enabled.store,
                 onChange: (is) => {
                   dataStructure.enabled.store.set(is);
                 }
@@ -88,13 +88,27 @@ function onClickMenuItem()
                   dataStructure.syncToGlobal.store.set(is);
                 }
               }
+            ),
+            button(
+              {
+                text: "{RED}Restore Global Configuration",
+                tooltip: "This will restore the global configuration and stop all syncs.",
+                onClick: () => {
+                  dataStructure.restoreGlobal.store.set(!dataStructure.restoreGlobal.store.get());
+                }
+              }
             )
           ]
         })
-      ]
+      ],
+      onOpen: () => isOpen = true,
+      onClose: () => isOpen = false
     }
   );
-  win_desc.open();
+  if (!isOpen)
+    win_desc.open();
+  else
+    win_desc.focus();
 }
 
 export { onClickMenuItem };
