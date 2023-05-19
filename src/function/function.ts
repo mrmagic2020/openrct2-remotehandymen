@@ -28,8 +28,6 @@ export function regCleanPathAction(toggle : boolean) {
             issue.remove(); // remove the litter
           }
           counter ++;
-          if (counter > issueLimit)
-            console.log(`Above issue limit (${counter} > ${issueLimit})`);
         });
         console.log(`Handyman ${i} Orders: ` + handyman.orders.toString());
       });
