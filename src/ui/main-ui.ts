@@ -1,22 +1,21 @@
 import {
-  tabwindow, tab, checkbox, WindowTemplate, label, button, toggle, spinner
+  tabwindow, tab, checkbox, WindowTemplate, label, button, toggle, spinner, dropdown, viewport, groupbox
 } from "openrct2-flexui";
 
 import {
-  dataStructure
+  dataStructure, staffList
 } from "../data/data"
 
 // Animations
-const spiralSlideIcon: ImageAnimation = {
+const tabOneIcon: ImageAnimation = {
 	frameBase: 5442,
 	frameCount: 16,
 	frameDuration: 4
 };
-const hangingMechanicIcon: ImageAnimation = {
-	frameBase: 11469,
-	frameCount: 12,
-	frameDuration: 4,
-	offset: { x: 21, y: 22 }
+const tabTwoIcon: ImageAnimation = {
+	frameBase: 5205,
+	frameCount: 16,
+	frameDuration: 4
 };
 
 let isOpen = false;
@@ -26,10 +25,10 @@ function onClickMenuItem()
     {
       title: "Remote Handymen",
       width: 300,
-      height: 200,
+      height: 400,
       tabs: [
         tab({ // Local config tab
-          image: spiralSlideIcon,
+          image: tabOneIcon,
           content: [
             label(
               {
@@ -60,11 +59,33 @@ function onClickMenuItem()
                   dataStructure.issueLimit.store.set(num);
                 }
               }
+            ),
+            groupbox(
+              {
+                text: "Supervisor",
+                content: [
+                  dropdown(
+                    {
+                      items: staffList.handymen.nameList,
+                      selectedIndex: dataStructure.chosenHandymanIndex.store,
+                      autoDisable: "empty",
+                      onChange: (index) => {
+                        dataStructure.chosenHandymanIndex.store.set(index);
+                      }
+                    }
+                  ),
+                  viewport(
+                    {
+                      target: dataStructure.chosenHandymanIndex.id_store
+                    }
+                  )
+                ],
+              }
             )
           ]
         }),
         tab({
-          image: hangingMechanicIcon,
+          image: tabTwoIcon,
           content: [
             label(
               {

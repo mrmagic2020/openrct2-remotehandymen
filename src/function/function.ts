@@ -39,3 +39,31 @@ export function regCleanPathAction(toggle : boolean) {
     console.log("Unsubscribed.");
   }
 };
+
+/**
+ * Returns the list of name of specified staff
+ * @param type 
+ * @returns 
+ */
+export function fetchStaffNameList(type: StaffType) {
+  const handymen = map.getAllEntities("staff").filter(staff => staff.staffType === type);
+  const nameList : string[] = [];
+  handymen.forEach(handyman => {
+    nameList.push(handyman.name);
+  });
+  return nameList;
+}
+
+/**
+ * Returns the list of id of specified staff
+ * @param type 
+ * @returns 
+ */
+export function fetchStaffIdList(type: StaffType) {
+  const handymen = map.getAllEntities("staff").filter(staff => staff.staffType === type);
+  const idList : number[] = [];
+  handymen.forEach(handyman => {
+    if (handyman.id !== null) idList.push(handyman.id);
+  });
+  return idList;
+}

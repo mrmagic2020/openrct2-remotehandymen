@@ -4,13 +4,13 @@ import {
 } from "openrct2-flexui"
 
 import {
-  regCleanPathAction, setIssueLimit
+  regCleanPathAction, setIssueLimit, fetchStaffNameList, fetchStaffIdList
 } from "../function/function"
 
 const LOCAL : string = "remotehandymen";
 const GLOBAL : string = LOCAL + "_global";
 
-export interface DataStructure {
+interface DataStructure {
   enabled: {
     readonly key: string;
     readonly global_key: string;
@@ -25,6 +25,14 @@ export interface DataStructure {
     global_store: WritableStore<number>;
     readonly default: number
   };
+  chosenHandymanIndex: {
+    readonly key: string,
+    readonly gobal_key: string,
+    store: WritableStore<number>,
+    id_store: WritableStore<number>,
+    global_store: WritableStore<number>,
+    readonly default: number
+  }
   useAsGlobal: {
     readonly key: string;
     store: WritableStore<boolean>
@@ -38,6 +46,14 @@ export interface DataStructure {
     store: WritableStore<boolean>
   };
 };
+
+interface StaffList {
+  handymen: {
+    nameList: WritableStore<string[]>;
+    idList: WritableStore<number[]>;
+    update: () => void;
+  };
+}
 
 /**
  * Stores the keys and stores of configurations. 
@@ -56,8 +72,16 @@ export const dataStructure : DataStructure = {
     key: LOCAL + ".issueLimit",
     global_key: GLOBAL + ".issueLimit",
     store: twoway(store<number>(context.getParkStorage().get(LOCAL + ".issueLimit", 5))).twoway,
-    global_store: twoway(store<number>(context.sharedStorage.get(GLOBAL + ".issueLimit", 5))).twoway,
+    global_store: store<number>(context.sharedStorage.get(GLOBAL + ".issueLimit", 5)),
     default: 5
+  },
+  chosenHandymanIndex: {
+    key: LOCAL + ".chosenHandymanIndex",
+    gobal_key: GLOBAL + ".chosenHandymanIndex",
+    store: twoway(store<number>(context.getParkStorage().get(LOCAL + ".chosenHandymanIndex", 0))).twoway,
+    id_store: store<number>(0),
+    global_store: store<number>(context.sharedStorage.get(GLOBAL + ".chosenHandymanIndex", 0)),
+    default: 0
   },
   useAsGlobal: { // only available as local
     key: LOCAL + ".useAsGlobal",
@@ -72,6 +96,18 @@ export const dataStructure : DataStructure = {
     store: store<boolean>(false)
   }
 };
+
+export const staffList : StaffList = {
+  handymen: {
+    nameList: store<string[]>(fetchStaffNameList("handyman")),
+    idList: store<number[]>(fetchStaffIdList("handyman")),
+    update: () => {
+      staffList.handymen.nameList.set(fetchStaffNameList("handyman"));
+      staffList.handymen.idList.set(fetchStaffIdList("handyman"));
+      dataStructure.chosenHandymanIndex.id_store.set(staffList.handymen.idList.get()[dataStructure.chosenHandymanIndex.store.get()]);
+    }
+  }
+}
 
 /**
  * Function for store subscription initialisation at plugin startup
@@ -110,6 +146,20 @@ export function InitData() : void {
     context.sharedStorage.set(dataStructure.issueLimit.global_key, value);
   });
 
+  dataStructure.chosenHandymanIndex.store.subscribe((value : number) => {
+    staffList.handymen.update();
+    context.getParkStorage().set(dataStructure.chosenHandymanIndex.key, value);
+
+    if (dataStructure.syncToGlobal.store.get()) { // sync
+      dataStructure.chosenHandymanIndex.global_store.set(value);
+    }
+  });
+
+  // global
+  dataStructure.chosenHandymanIndex.global_store.subscribe((value : number) => {
+    context.sharedStorage.set(dataStructure.chosenHandymanIndex.gobal_key, value);
+  });
+
   // Global settings button subscription
   dataStructure.useAsGlobal.store.subscribe((_value : boolean) => {
     // Update all local config to shared storage
@@ -124,6 +174,7 @@ export function InitData() : void {
   dataStructure.restoreGlobal.store.subscribe((_value : boolean) => {
     dataStructure.enabled.global_store.set(dataStructure.enabled.default);
     dataStructure.issueLimit.global_store.set(dataStructure.issueLimit.default);
+    dataStructure.chosenHandymanIndex.global_store.set(dataStructure.chosenHandymanIndex.default);
   });
 };
 
