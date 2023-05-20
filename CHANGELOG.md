@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Add permission requirement switch for servers. 
+
+### Fixed
+- Fix surpervision unavailable if scenario starts with no handyman. 
+- Fix global config udpate / sync missing new config items. 
+
 ## [0.3.0] -2023-05-20
 
 ### Added
