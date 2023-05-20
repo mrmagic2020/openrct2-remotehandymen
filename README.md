@@ -27,7 +27,7 @@
 
 ## Changelog
 
-Click [here]() to view the full changelog. 
+Click [here](https://github.com/mrmagic2020/openrct2-remotehandymen/blob/main/CHANGELOG.md) to view the full changelog. 
 
 ## Contributing
 
