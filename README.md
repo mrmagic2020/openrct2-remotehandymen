@@ -2,7 +2,7 @@
 
 *No more "blind" handymen uselessly wandering about.*
 
-![](https://img.shields.io/badge/type-remote-important?&style=flat-square) ![](https://img.shields.io/badge/language-Typescript-3178C6?&style=flat-square) ![](https://img.shields.io/badge/version-v0.3.0-inactive?&style=flat-square) ![](https://img.shields.io/badge/status-developing-inactive?style=flat-square) ![](https://img.shields.io/badge/license-MIT-informational?&style=flat-square)
+![](https://img.shields.io/badge/type-remote-important?style=flat-square) ![](https://img.shields.io/badge/language-Typescript-3178C6?style=flat-square) ![](https://img.shields.io/badge/version-v0.3.0-inactive?style=flat-square) ![](https://img.shields.io/badge/status-developing-inactive?style=flat-square) ![](https://img.shields.io/badge/license-MIT-informational?style=flat-square)
 
 ## Feature
 - Handymen don't have to walk over litter to clean them - as long as the litter is within their patrol area, it will be automatically removed every day.
