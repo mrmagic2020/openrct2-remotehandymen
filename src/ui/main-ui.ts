@@ -21,6 +21,11 @@ const tabTwoIcon: ImageAnimation = {
 let isOpen = false;
 function onClickMenuItem()
 {
+  if (dataStructure.requirePermission.store.get() && network.mode === "client" && !(network.getGroup(network.currentPlayer.group).permissions.some((perm) => perm === "staff"))) {
+    ui.showError("Permission Denied", "You don't have the permission to access this page!");
+    return; // deny unauthorized access
+  }
+  staffList.handymen.update(); // update handyman list every time the player opens the window
   const win_desc : WindowTemplate = tabwindow(
     {
       title: "Remote Handymen",
@@ -45,6 +50,17 @@ function onClickMenuItem()
                 }
               }
             ),
+            checkbox(
+              {
+                text: "Require \"Staff\" permission to use",
+                tooltip: "If enabled, players need to obtain \"Staff\" permission to use this plugin. Only you(server) can see this option.",
+                visibility: network.mode === "server" ? "visible" : "none",
+                isChecked: dataStructure.requirePermission.store,
+                onChange: (is) => {
+                  dataStructure.requirePermission.store.set(is);
+                }
+              }
+            ),
             label(
               {
                 text: "The maximum amount of path issue a handyman can \nremotely clear every day",
@@ -62,13 +78,13 @@ function onClickMenuItem()
             ),
             groupbox(
               {
-                text: "Supervisor",
+                text: "Supervision",
                 content: [
                   dropdown(
                     {
                       items: staffList.handymen.nameList,
                       selectedIndex: dataStructure.chosenHandymanIndex.store,
-                      autoDisable: "empty",
+                      autoDisable: "single",
                       onChange: (index) => {
                         dataStructure.chosenHandymanIndex.store.set(index);
                       }

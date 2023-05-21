@@ -18,6 +18,13 @@ interface DataStructure {
     global_store: WritableStore<boolean>;
     readonly default: boolean
   };
+  requirePermission: {
+    readonly key: string;
+    readonly global_key: string;
+    store: WritableStore<boolean>;
+    global_store: WritableStore<boolean>;
+    readonly default: boolean
+  };
   issueLimit: {
     readonly key: string;
     readonly global_key: string;
@@ -67,6 +74,13 @@ export const dataStructure : DataStructure = {
     store: twoway(store<boolean>(context.getParkStorage().get(LOCAL + ".enabled", false))).twoway,
     global_store: store<boolean>(context.sharedStorage.get(GLOBAL + ".enabled", false)),
     default: false
+  },
+  requirePermission: {
+    key: LOCAL + ".requirePermission",
+    global_key: GLOBAL + ".requirePermission",
+    store: twoway(store<boolean>(context.getParkStorage().get(LOCAL + ".requirePermission", true))).twoway,
+    global_store: store<boolean>(context.sharedStorage.get(GLOBAL + ".requirePermission", true)),
+    default: true
   },
   issueLimit: {
     key: LOCAL + ".issueLimit",
@@ -132,6 +146,19 @@ export function InitData() : void {
     context.sharedStorage.set(dataStructure.enabled.global_key, value);
   });
 
+  dataStructure.requirePermission.store.subscribe((value : boolean) => {
+    context.getParkStorage().set(dataStructure.requirePermission.key, value);
+
+    if (dataStructure.syncToGlobal.store.get()) { // sync
+      dataStructure.requirePermission.global_store.set(value);
+    }
+  });
+
+  // global
+  dataStructure.requirePermission.global_store.subscribe((value : boolean) => {
+    context.sharedStorage.set(dataStructure.requirePermission.global_key, value);
+  });
+
   dataStructure.issueLimit.store.subscribe((value: number) => {
     context.getParkStorage().set(dataStructure.issueLimit.key, value);
     setIssueLimit(value);
@@ -165,6 +192,8 @@ export function InitData() : void {
     // Update all local config to shared storage
     context.sharedStorage.set(dataStructure.enabled.global_key, dataStructure.enabled.store.get());
     context.sharedStorage.set(dataStructure.issueLimit.global_key, dataStructure.issueLimit.store.get());
+    context.sharedStorage.set(dataStructure.requirePermission.global_key, dataStructure.requirePermission.store.get());
+    context.sharedStorage.set(dataStructure.chosenHandymanIndex.gobal_key, dataStructure.chosenHandymanIndex.store.get());
   });
 
   // Global settings sync toggle subscription
@@ -174,6 +203,7 @@ export function InitData() : void {
   dataStructure.restoreGlobal.store.subscribe((_value : boolean) => {
     dataStructure.enabled.global_store.set(dataStructure.enabled.default);
     dataStructure.issueLimit.global_store.set(dataStructure.issueLimit.default);
+    dataStructure.requirePermission.global_store.set(dataStructure.requirePermission.default);
     dataStructure.chosenHandymanIndex.global_store.set(dataStructure.chosenHandymanIndex.default);
   });
 };
